@@ -8,45 +8,60 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MyGdxGame extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture bird;
+    SpriteBatch batch;
+    Texture bird;
 
-	public static final float SCR_WIDTH = 1280;
-	public static final float SCR_HEIGHT = 720;
+    public static final float SCR_WIDTH = 1280;
+    public static final float SCR_HEIGHT = 720;
 
-	OrthographicCamera camera; // пересчитывает размеры для различных экранов
+    OrthographicCamera camera; // пересчитывает размеры для различных экранов
 
-	int x, y;
-	int birdWith, birdHeight;
-	
-	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		bird = new Texture("bird.png");
-		camera = new OrthographicCamera();
+    int x, y;
+    int birdWith, birdHeight;
+    int speed = 5;
+    boolean up = true;
 
-		x = 0;
-		y = 0;
+    @Override
+    public void create() {
+        batch = new SpriteBatch();
+        bird = new Texture("bird.png");
+        camera = new OrthographicCamera();
 
-		birdWith = 250;
-		birdHeight = 200;
+        x = 0;
+        y = 0;
 
-		camera.setToOrtho(false, SCR_WIDTH, SCR_HEIGHT);
-	}
+        birdWith = 250;
+        birdHeight = 200;
 
-	@Override
-	public void render () {
-		ScreenUtils.clear(1, 1, 1, 1);
-		batch.begin();
+        camera.setToOrtho(false, SCR_WIDTH, SCR_HEIGHT);
+    }
 
-		batch.draw(bird, x, y, birdWith, birdHeight);
+    @Override
+    public void render() {
+        ScreenUtils.clear(1, 1, 1, 1);
+        batch.begin();
 
-		batch.end();
-	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		bird.dispose();
-	}
+        batch.draw(bird, x, y, birdWith, birdHeight);
+
+        if (y >= SCR_HEIGHT) {
+            up = false;
+        }
+        if (y <= 0) {
+            up = true;
+        }
+
+        if (up) {
+            y += speed;
+        } else {
+            y -= speed;
+        }
+
+        batch.end();
+    }
+
+    @Override
+    public void dispose() {
+        batch.dispose();
+        bird.dispose();
+    }
 }
