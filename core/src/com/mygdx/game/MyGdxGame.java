@@ -10,15 +10,32 @@ public class MyGdxGame extends ApplicationAdapter {
     SpriteBatch batch;
     Bird bird;
 
+    Tube[] downTubes;
+    Tube[] upTubes;
+
     public static final float SCR_WIDTH = 1280;
     public static final float SCR_HEIGHT = 720;
 
     OrthographicCamera camera; // пересчитывает размеры для различных экранов
 
+    int distanceBetweenTubes = 800;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
+
         bird = new Bird(200, SCR_HEIGHT / 2, 10, 250, 200);
+
+        downTubes = new Tube[3];
+        for (int i = 0; i < downTubes.length; i++) {
+            downTubes[i] = new Tube(SCR_WIDTH + distanceBetweenTubes * (i + 1), distanceBetweenTubes, false);
+        }
+
+        upTubes = new Tube[3];
+        for (int i = 0; i < upTubes.length; i++) {
+            upTubes[i] = new Tube(SCR_WIDTH + distanceBetweenTubes * (i + 1), distanceBetweenTubes, true);
+        }
+
         camera = new OrthographicCamera();
 
         camera.setToOrtho(false, SCR_WIDTH, SCR_HEIGHT);
@@ -28,6 +45,16 @@ public class MyGdxGame extends ApplicationAdapter {
     public void render() {
         ScreenUtils.clear(1, 1, 1, 1);
         batch.begin();
+
+        for (Tube tube : downTubes) {
+            tube.draw(batch);
+            tube.move();
+        }
+
+        for (Tube tube : upTubes) {
+            tube.draw(batch);
+            tube.move();
+        }
 
         bird.draw(batch);
         bird.fly();
@@ -43,5 +70,11 @@ public class MyGdxGame extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         bird.dispose();
+        for (int i = 0; i < downTubes.length; i++) {
+            downTubes[i].dispose();
+        }
+        for (int i = 0; i < upTubes.length; i++) {
+            upTubes[i].dispose();
+        }
     }
 }
