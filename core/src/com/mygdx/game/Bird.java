@@ -5,14 +5,16 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class Bird {
 
-    int x, y;
-    int birdWith, birdHeight;
-    int speed = 5;
-    boolean up = true;
+    float x, y;
+    float birdWith, birdHeight;
+    int speed;
+    boolean jump = true;
 
     Texture img;
 
-    public Bird(int x, int y, int speed, int birdWith, int birdHeight) {
+    float jumpHeight;
+
+    public Bird(float x, float y, int speed, float birdWith, float birdHeight) {
         this.x = x;
         this.y = y;
         this.speed = speed;
@@ -22,15 +24,17 @@ public class Bird {
         img = new Texture("bird.png");
     }
 
+    void onClick() {
+        jump = true;
+        jumpHeight = 200f + y;
+    }
+
     void fly() {
-        if (y >= MyGdxGame.SCR_HEIGHT) {
-            up = false;
-        }
-        if (y <= 0) {
-            up = true;
+        if (y >= jumpHeight) {
+            jump = false;
         }
 
-        if (up) {
+        if (jump) {
             y += speed;
         } else {
             y -= speed;
