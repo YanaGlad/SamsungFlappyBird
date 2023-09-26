@@ -40,7 +40,7 @@ public class Tube {
 
         random = new Random();
 
-        y = random.nextInt(300);
+        y = random.nextInt(150);
 
         initialX = x;
         if (isUpTube) {
@@ -56,6 +56,16 @@ public class Tube {
         }
     }
 
+    boolean hit(Bird bird) {
+        boolean hit = false;
+        if (isUpTube) {
+            hit = bird.y >= startY - y - bird.birdHeight;
+        } else {
+            hit = bird.y <= startY - y + height;
+        }
+        return hit && bird.x >= x && bird.x <= x + width;
+    }
+
     void draw(Batch batch) {
         batch.draw(img, x, startY - y, width, height);
     }
@@ -64,7 +74,7 @@ public class Tube {
         x -= speed;
         if (x < -width) {
             x = SCR_WIDTH + distanceBetweenTubes;
-            y = random.nextInt(300);
+            y = random.nextInt(150);
         }
     }
 

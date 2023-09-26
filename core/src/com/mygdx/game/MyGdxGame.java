@@ -49,11 +49,17 @@ public class MyGdxGame extends ApplicationAdapter {
         for (Tube tube : downTubes) {
             tube.draw(batch);
             tube.move();
+            if(tube.hit(bird)) {
+                System.out.println("down hit");
+            }
         }
 
         for (Tube tube : upTubes) {
             tube.draw(batch);
             tube.move();
+            if(tube.hit(bird)) {
+                System.out.println("up hit");
+            }
         }
 
         bird.draw(batch);
@@ -62,7 +68,7 @@ public class MyGdxGame extends ApplicationAdapter {
         if (Gdx.input.justTouched()) {
             bird.onClick();
         }
-
+        camera.update();
         batch.end();
     }
 
