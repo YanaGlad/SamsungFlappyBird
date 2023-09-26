@@ -13,10 +13,8 @@ public class MyGdxGame extends ApplicationAdapter {
     Tube[] downTubes;
     Tube[] upTubes;
 
-    public static final float SCR_WIDTH = 1280;
-    public static final float SCR_HEIGHT = 720;
-
-    OrthographicCamera camera; // пересчитывает размеры для различных экранов
+    public static float SCR_WIDTH = 1280;
+    public static float SCR_HEIGHT = 720;
 
     int distanceBetweenTubes = 800;
 
@@ -36,9 +34,8 @@ public class MyGdxGame extends ApplicationAdapter {
             upTubes[i] = new Tube(SCR_WIDTH + distanceBetweenTubes * (i + 1), distanceBetweenTubes, true);
         }
 
-        camera = new OrthographicCamera();
-
-        camera.setToOrtho(false, SCR_WIDTH, SCR_HEIGHT);
+        SCR_WIDTH = Gdx.graphics.getWidth();
+        SCR_HEIGHT = Gdx.graphics.getHeight();
     }
 
     @Override
@@ -49,11 +46,17 @@ public class MyGdxGame extends ApplicationAdapter {
         for (Tube tube : downTubes) {
             tube.draw(batch);
             tube.move();
+            if(tube.hit(bird)) {
+                System.out.println("down hit");
+            }
         }
 
         for (Tube tube : upTubes) {
             tube.draw(batch);
             tube.move();
+            if(tube.hit(bird)) {
+                System.out.println("up hit");
+            }
         }
 
         bird.draw(batch);
@@ -62,7 +65,6 @@ public class MyGdxGame extends ApplicationAdapter {
         if (Gdx.input.justTouched()) {
             bird.onClick();
         }
-
         batch.end();
     }
 
