@@ -3,7 +3,9 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -29,6 +31,10 @@ public class MyGdxGame extends ApplicationAdapter {
 
     private int tubeCount = 4;
 
+    BitmapFont font;
+
+    int count = 0;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -44,6 +50,10 @@ public class MyGdxGame extends ApplicationAdapter {
         background = new Background();
 
         hitSound = Gdx.audio.newSound(Gdx.files.internal("hit.mp3"));
+
+        font = new BitmapFont();
+        font.getData().scale(5f);
+        font.setColor(Color.WHITE);
     }
 
     void initTubes() {
@@ -74,8 +84,15 @@ public class MyGdxGame extends ApplicationAdapter {
             for (int i = 0; i < tubeCount; i++) {
                 downTubes[i].draw(batch);
                 upTubes[i].draw(batch);
+
                 downTubes[i].move();
                 upTubes[i].move();
+
+                if (downTubes[i].skipped) {
+                    count++;
+                    downTubes[i].skipped = false;
+                }
+
                 if (upTubes[i].hit(bird) || downTubes[i].hit(bird)) {
                     isGameOver = true;
                     hitSound.play();
@@ -88,8 +105,12 @@ public class MyGdxGame extends ApplicationAdapter {
             if (Gdx.input.justTouched()) {
                 isGameOver = false;
                 bird.y = SCR_HEIGHT / 2;
+                count = 0;
             }
         }
+
+        font.draw(batch, "Count: " + count, 50, SCR_HEIGHT - 100);
+
         batch.end();
     }
 

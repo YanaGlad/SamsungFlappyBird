@@ -33,6 +33,8 @@ public class Tube {
 
     boolean isUpTube;
 
+    boolean skipped = false;
+
     public Tube(float x, int distanceBetweenTubes, boolean isUpTube) {
         this.x = x;
         this.isUpTube = isUpTube;
@@ -75,6 +77,7 @@ public class Tube {
         if (x < -width) {
             x = SCR_WIDTH + distanceBetweenTubes;
             y = random.nextInt(150);
+            skipped = true;
         }
     }
 
