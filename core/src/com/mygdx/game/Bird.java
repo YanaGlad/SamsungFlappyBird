@@ -10,7 +10,9 @@ public class Bird {
     int speed;
     boolean jump = true;
 
-    Texture img;
+    Texture[] frames;
+
+    int frame = 0;
 
     float jumpHeight;
 
@@ -21,7 +23,14 @@ public class Bird {
         this.birdWith = birdWith;
         this.birdHeight = birdHeight;
 
-        img = new Texture("bird.png");
+        frames = new Texture[]{
+                new Texture("bird.png"),
+                new Texture("bird.png"),
+                new Texture("bird.png"),
+                new Texture("bird_2.png"),
+                new Texture("bird_2.png"),
+                new Texture("bird_2.png")
+        };
     }
 
     void onClick() {
@@ -42,10 +51,14 @@ public class Bird {
     }
 
     void draw(Batch batch) {
-        batch.draw(img, x, y, birdWith, birdHeight);
+        batch.draw(frames[frame], x, y, birdWith, birdHeight);
+
+        if (frame++ == frames.length - 1) frame = 0;
     }
 
     void dispose() {
-        img.dispose();
+        for (int i = 0; i < frames.length; i++) {
+            frames[i].dispose();
+        }
     }
 }

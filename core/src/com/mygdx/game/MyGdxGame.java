@@ -47,14 +47,14 @@ public class MyGdxGame extends ApplicationAdapter {
     }
 
     void initTubes() {
-        downTubes = new Tube[tubeCount];
-        for (int i = 0; i < downTubes.length; i++) {
-            downTubes[i] = new Tube(SCR_WIDTH + distanceBetweenTubes * (i + 1), distanceBetweenTubes, false);
-        }
-
         upTubes = new Tube[tubeCount];
         for (int i = 0; i < upTubes.length; i++) {
             upTubes[i] = new Tube(SCR_WIDTH + distanceBetweenTubes * (i + 1), distanceBetweenTubes, true);
+        }
+
+        downTubes = new Tube[tubeCount];
+        for (int i = 0; i < downTubes.length; i++) {
+            downTubes[i] = new Tube(SCR_WIDTH + distanceBetweenTubes * (i + 1), distanceBetweenTubes, false);
         }
     }
 
@@ -88,7 +88,6 @@ public class MyGdxGame extends ApplicationAdapter {
             if (Gdx.input.justTouched()) {
                 isGameOver = false;
                 bird.y = SCR_HEIGHT / 2;
-                initTubes();
             }
         }
         batch.end();
