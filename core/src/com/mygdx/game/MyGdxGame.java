@@ -2,13 +2,19 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MyGdxGame extends ApplicationAdapter {
     SpriteBatch batch;
     Bird bird;
+
+    Texture gameOver;
+
+    boolean isGameOver = false;
 
     Tube[] downTubes;
     Tube[] upTubes;
@@ -20,12 +26,26 @@ public class MyGdxGame extends ApplicationAdapter {
 
     int distanceBetweenTubes = 800;
 
+    Sound hitSound;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
 
         bird = new Bird(200, SCR_HEIGHT / 2, 10, 250, 200);
 
+        initTubes();
+
+        gameOver = new Texture("gameover.png");
+
+        camera = new OrthographicCamera();
+
+        camera.setToOrtho(false, SCR_WIDTH, SCR_HEIGHT);
+
+        hitSound = Gdx.audio.newSound(Gdx.files.internal("hit.mp3"));
+    }
+
+    void initTubes() {
         downTubes = new Tube[3];
         for (int i = 0; i < downTubes.length; i++) {
             downTubes[i] = new Tube(SCR_WIDTH + distanceBetweenTubes * (i + 1), distanceBetweenTubes, false);
@@ -36,9 +56,6 @@ public class MyGdxGame extends ApplicationAdapter {
             upTubes[i] = new Tube(SCR_WIDTH + distanceBetweenTubes * (i + 1), distanceBetweenTubes, true);
         }
 
-        camera = new OrthographicCamera();
-
-        camera.setToOrtho(false, SCR_WIDTH, SCR_HEIGHT);
     }
 
     @Override
@@ -46,28 +63,36 @@ public class MyGdxGame extends ApplicationAdapter {
         ScreenUtils.clear(1, 1, 1, 1);
         batch.begin();
 
-        for (Tube tube : downTubes) {
-            tube.draw(batch);
-            tube.move();
-            if(tube.hit(bird)) {
-                System.out.println("down hit");
+        for (int i = 0; i < 3; i++) {
+            if (!isGameOver) {
+                downTubes[i].draw(batch);
+                upTubes[i].draw(batch);
+            }
+            downTubes[i].move();
+            upTubes[i].move();
+            if (upTubes[i].hit(bird) || downTubes[i].hit(bird)) {
+                isGameOver = true;
+                hitSound.play();
             }
         }
 
-        for (Tube tube : upTubes) {
-            tube.draw(batch);
-            tube.move();
-            if(tube.hit(bird)) {
-                System.out.println("up hit");
+        if (!isGameOver) {
+            bird.draw(batch);
+            bird.fly();
+            if (Gdx.input.justTouched()) {
+                bird.onClick();
             }
         }
 
-        bird.draw(batch);
-        bird.fly();
-
-        if (Gdx.input.justTouched()) {
-            bird.onClick();
+        if (isGameOver) {
+            batch.draw(gameOver, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            if (Gdx.input.justTouched()) {
+                isGameOver = false;
+                bird.y = SCR_HEIGHT / 2;
+                initTubes();
+            }
         }
+
         camera.update();
         batch.end();
     }
@@ -76,6 +101,7 @@ public class MyGdxGame extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         bird.dispose();
+        gameOver.dispose();
         for (int i = 0; i < downTubes.length; i++) {
             downTubes[i].dispose();
         }
